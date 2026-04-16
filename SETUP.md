@@ -45,7 +45,12 @@ source .venv/bin/activate
 # 3. Install dependencies
 pip install -r requirements.txt
 
-# 4. Run
+# 4. Linux only (requires root/sudo, one-time setup)
+sudo apt install python3-tk
+sudo usermod -aG dialout $USER
+# Re-login after this step for serial port access to take effect
+
+# 5. Run
 python stimulus_v4.py
 ```
 
