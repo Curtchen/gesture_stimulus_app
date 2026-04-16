@@ -1,0 +1,6 @@
+numpy>=2.0
+matplotlib>=3.10
+pillow>=12.0
+pyserial>=3.5
+neurokit2>=0.2.12
+opencv-python>=4.13
