@@ -24,14 +24,14 @@ gesture-stimulus-app/
 ## Prerequisites
 
 - **Python**: 3.12+ (tested on 3.13.9)
-- **OS**: Windows (uses `winsound` for audio; other OS will run without sound)
+- **OS**: Windows / Linux / macOS (cross-platform audio support)
 - **Hardware**: ESP32 devices with EXG firmware (optional - has simulation mode)
 
 ## Quick Start
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/Curtchen/gesture-stimulus-app.git
+git clone https://github.com/Curtchen/gesture_stimulus_app.git
 cd gesture-stimulus-app
 
 # 2. Create virtual environment
@@ -62,6 +62,8 @@ python stimulus_v4.py
 
 All except `neurokit2` are optional - the app will run in degraded mode without them.
 
+Audio beep uses `winsound` on Windows, `aplay` on Linux, `afplay` on macOS (all built-in, no extra packages needed).
+
 ## Key Configuration
 
 Edit the `CONFIG` dict at the top of `stimulus_v4.py`:
@@ -82,6 +84,20 @@ Edit the `CONFIG` dict at the top of `stimulus_v4.py`:
 
 Recordings are saved to `./recordings/` with timestamped folders per session.
 
+## Platform Notes
+
+### Linux
+- Install tkinter: `sudo apt install python3-tk`
+- Serial port permission: `sudo usermod -aG dialout $USER` (re-login required)
+- Audio uses `aplay` (pre-installed on most distros)
+
+### macOS
+- Install tkinter: `brew install python-tk`
+- Audio uses `afplay` (pre-installed)
+
+### Windows
+- No extra setup needed
+
 ## Migration Checklist
 
 When moving to a new machine:
@@ -89,9 +105,10 @@ When moving to a new machine:
 1. Clone the repo
 2. Set up Python 3.12+ and virtual environment
 3. `pip install -r requirements.txt`
-4. Connect ESP32 devices via USB (auto-detected)
-5. Verify `gesture_images/` contains all 11 PNGs and 10 MP4s
-6. Run `python stimulus_v4.py` to test
+4. **Linux only**: `sudo apt install python3-tk` and add user to `dialout` group
+5. Connect ESP32 devices via USB (auto-detected)
+6. Verify `gesture_images/` contains all 11 PNGs and 10 MP4s
+7. Run `python stimulus_v4.py` to test
 
 ## Controls
 

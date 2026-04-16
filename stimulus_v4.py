@@ -1798,6 +1798,37 @@ class MultiDeviceRecorderApp:
                 winsound.Beep(frequency, duration)
             except:
                 pass
+        else:
+            # Linux/macOS: play generated WAV in background thread
+            try:
+                threading.Thread(
+                    target=self._play_tone, args=(frequency, duration),
+                    daemon=True
+                ).start()
+            except:
+                pass
+
+    @staticmethod
+    def _play_tone(frequency, duration):
+        """Generate a sine wave and play it via aplay (Linux) or afplay (macOS)."""
+        import wave, io, struct as st, subprocess, sys, math
+        sample_rate = 8000
+        n_samples = int(sample_rate * duration / 1000)
+        buf = io.BytesIO()
+        with wave.open(buf, 'wb') as wf:
+            wf.setnchannels(1)
+            wf.setsampwidth(2)
+            wf.setframerate(sample_rate)
+            for i in range(n_samples):
+                sample = int(16000 * math.sin(2 * math.pi * frequency * i / sample_rate))
+                wf.writeframes(st.pack('<h', sample))
+        try:
+            cmd = ["afplay", "-"] if sys.platform == "darwin" else ["aplay", "-q", "-"]
+            proc = subprocess.Popen(cmd, stdin=subprocess.PIPE,
+                                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            proc.communicate(input=buf.getvalue())
+        except:
+            pass
 
     def _toggle_pause(self):
         if not self.is_running:
